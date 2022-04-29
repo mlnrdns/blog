@@ -1,0 +1,11 @@
+#recipe Blog
+
+Settings[Keys.Host] = "mlnrdns.com";
+Settings[BlogKeys.IncludeDateInPostPath] = true;
+Settings[BlogKeys.RssPath] = "feed.xml";
+Settings[BlogKeys.Title] = "mlnrdns";
+Settings[BlogKeys.Description] = "mlnrdns";
+Settings[BlogKeys.Intro] = "smarttax manager at pricewaterhousecoopers";
+Settings[BlogKeys.Image] = "/assets/images/background.jpg";
+Settings[BlogKeys.IndexPageSize] = 5;
+Settings[Keys.LinkHideExtensions] = false;

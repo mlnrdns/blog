@@ -1,0 +1,39 @@
+Title: RSA titkosítás
+Published: 2018-01-13 18:18
+Author: molnardenes
+Tags: [cryptography]
+---
+
+Még egy algoritmus Excelben a régi blogról:
+
+* * *
+
+Az **RSA-algoritmus** egy nyílt kulcsú vagy aszimmetrikus titkosító algoritmus. Az aszimmetrikussága abban rejlik, hogy az el- és dekódoláshoz nem ugyanazt a kulcsot használja. Az eljárást Ron Rivest, Adi Shamir és Len Adleman fejlesztették ki. Matematikai alapjait a moduláris aritmetika és a prímszámelmélet adja. A módszer lényegét az adja, hogy egy nagy szám prímtényezőkre bontására nem ismert gyors és hatékony algoritmus.
+
+Az algoritmus első lépése a kulcsválasztás. Ez a következő módon történik:
+
+1.  Választunk két prímszámot (napjainkban 1024 bites számokról van szó legalább). Az egyszerűség kedvéért példánkban ez legyen a ![\inline p= 211](<http://latex.codecogs.com/svg.latex?\inline&space;p=&space;211>) és a ![\inline q=127]( <http://latex.codecogs.com/svg.latex?\inline&space;q=127>).
+2.  A két prím szorzata lesz az ![\inline N=p*q=26797](<http://latex.codecogs.com/svg.latex?\inline&space;N=p*q=26797>) modulus.
+3.  Kiszámítjuk a ![\inline \varphi (N) = (p-1)*(q-1) = 26460](<http://latex.codecogs.com/gif.latex?\inline&space;\varphi&space;(N)&space;=&space;(p-1)*(q-1)&space;=&space;26460>) értéket.
+4.  Válasszunk egy ![e](<http://latex.codecogs.com/svg.latex?e>) értéket, mégpedig úgy, hogy az relatív prím legyen ![\inline \varphi (N)](<http://latex.codecogs.com/svg.latex?\inline&space;\varphi&space;(N)>)-hez, azaz ![\inline lnko (e, \varphi (N))= 1](<http://latex.codecogs.com/svg.latex?\inline&space;lnko&space;(e,&space;\varphi&space;(N))=&space;1>). Ha ![e](<http://latex.codecogs.com/svg.latex?e>) nem osztója ![\inline \varphi (N)](<http://latex.codecogs.com/svg.latex?\inline&space;\varphi&space;(N)>)-nek, akkor relatív prím hozzá képest. Legyen ![\inline e= 19](<http://latex.codecogs.com/svg.latex?\inline&space;e=&space;19>). Ez az ![e](<http://latex.codecogs.com/svg.latex?e>) érték közreadható mint a **nyilvános kulcs** egyik eleme. A nyilvános kulcs ![\inline (N,e)](<http://latex.codecogs.com/svg.latex?\inline&space;(N,e)>).
+5.  Most válasszunk egy ![\inline d](<http://latex.codecogs.com/svg.latex?\inline&space;d>) értéket, amely multiplikatív inverze az ![e](<http://latex.codecogs.com/svg.latex?e>)-nek moduló ![\inline \varphi (N)](<http://latex.codecogs.com/svg.latex?\inline&space;\varphi&space;(N)>), vagyis ![\inline d^{-1} \equiv e\: (mod\: \varphi (N))](<http://latex.codecogs.com/svg.latex?\inline&space;d^{-1}&space;\equiv&space;e\:&space;(mod\:&space;\varphi&space;(N))>). Még másképpen ![\inline d*e \equiv 1\: (mod\: \varphi (N))](<http://latex.codecogs.com/svg.latex?\inline&space;d*e&space;\equiv&space;1\:&space;(mod\:&space;\varphi&space;(N))>)Az így kapott ![\inline d](<http://latex.codecogs.com/svg.latex?\inline&space;d>) lesz a **titkos kulcs** egyik eleme. A titkos kulcs ![\inline (N,d)](<http://latex.codecogs.com/svg.latex?\inline&space;(N,d)>). A ![\inline d](<http://latex.codecogs.com/svg.latex?\inline&space;d>) értékét titokban kell tartani, hogy ne lehessen visszafejteni az elkódolt információt. Emellett szükséges a ![\inline p](<http://latex.codecogs.com/svg.latex?\inline&space;p>), ![\inline q](<http://latex.codecogs.com/svg.latex?\inline&space;q>) és a ![\inline \varphi (N)](http://latex.codecogs.com/svg.latex?\inline&space;\varphi&space;(N)) értékének titokban tartása, mivel ezek alapján is visszafejthető a ![\inline d](<http://latex.codecogs.com/svg.latex?\inline&space;d>). Excelben ezt úgy tudjuk megtenni, hogy kiszámítjuk a ![\inline \varphi (N)](<http://latex.codecogs.com/svg.latex?\inline&space;\varphi&space;(N)>)-t, majd hozzáadunk ![\inline 1](http://latex.codecogs.com/svg.latex?\inline&space;1)-et. Ez a szám lesz egy számtani sorozat első eleme. Az elemek mindig ![\inline \varphi (N)](<http://latex.codecogs.com/svg.latex?\inline&space;\varphi&space;(N)>)-nel növekszenek. Ezeket az elemeket végigosztjuk ![e](<http://latex.codecogs.com/svg.latex?e>)-vel, és ahol a hányados egész szám, azt választhatjuk ![\inline d](<http://latex.codecogs.com/svg.latex?\inline&space;d>)-nek (ugyanis ezekben az esetekben lesz az ![e](<http://latex.codecogs.com/svg.latex?e>) és ![\inline d](<http://latex.codecogs.com/svg.latex?\inline&space;d>) modulussal vett szorzata ![\inline 1](<http://latex.codecogs.com/svg.latex?\inline&space;1)>). Nézzük:
+
+[![rsa_1](/assets/images/rsa_1.png)](/assets/images/rsa_1.png)
+
+* * *
+
+## Üzenetkódolás
+
+Alíz a nyilvános kulcsát ![\inline (N,e)](http://latex.codecogs.com/svg.latex?\inline&space;(N,e)) eljuttatja Bobnak, a titkos kulcsát viszont titokban tartja. Bob ezután elküldi az üzenetét (![\inline M](http://latex.codecogs.com/svg.latex?\inline&space;M)) Alíznak. Első körben ![\inline M](http://latex.codecogs.com/svg.latex?\inline&space;M)-et számokká alakítja valamilyen egyezményes úton (![\inline m](http://latex.codecogs.com/svg.latex?\inline&space;m)). Végül kiszámítja a ![\inline c](http://latex.codecogs.com/svg.latex?\inline&space;c) kódszöveget a következő módon: ![\inline c = m^e mod N](http://latex.codecogs.com/svg.latex?\inline&space;c&space;=&space;m^e&space;mod&space;N)
+
+Excelben a szöveget a KÓD függvénnyel betűvé alakítjuk. Ezután az ismételt négyzetre emeléses hatványozással számítjuk ki a ![\inline c](http://latex.codecogs.com/svg.latex?\inline&space;c) kódszöveget. Adatsor használatával felveszünk a példánkban meghatározott ![e](http://latex.codecogs.com/svg.latex?e) hosszúságú számtani sorozatot ![\inline 1, 2, ..., e](http://latex.codecogs.com/svg.latex?\inline&space;1,&space;2,&space;...,&space;e) -ig. Ezután az első helyre bemásoljuk az első karakter kódjának modulussal képzett értékét. A második elem esetén összeszorozzuk az első karakter kódját és az első elemet, majd képezzük a szorzat modulussal vett maradékát. Harmadik lépésben az első karakter kódját a második elemmel szorozzuk, és képezzük a modulussal vett maradékát, és így tovább. A ![\inline c](http://latex.codecogs.com/svg.latex?\inline&space;c) kódszöveg az ![\inline e.](http://latex.codecogs.com/svg.latex?\inline&space;e.)oszlop értékeiből tevődik össze (példánkban ez a ![\inline 19.](http://latex.codecogs.com/svg.latex?\inline&space;19.)oszlop lesz):
+
+[![rsa_2](/assets/images/rsa_2.png)](/assets/images/rsa_2.png)
+
+* * *
+
+## Üzenet dekódolása
+
+Alíz, miután megkapta Bobtól az üzenetet, saját titkos kulcsát, ![\inline d](http://latex.codecogs.com/svg.latex?\inline&space;d)-t használva vissza tudja fejteni ![\inline c](http://latex.codecogs.com/svg.latex?\inline&space;c)-ből ![\inline m](http://latex.codecogs.com/svg.latex?\inline&space;m)-et a következő módon: ![\inline m = c^d\: mod \:N](http://latex.codecogs.com/svg.latex?\inline&space;m&space;=&space;c^d\:&space;mod&space;\:N), majd ebből képes lesz visszafejteni ![\inline M](http://latex.codecogs.com/svg.latex?\inline&space;M)-et. Excelben ez lényegében ugyanazon az elven működik, mint az elkódolás. Ebben az esetben az ![(N, d)](http://latex.codecogs.com/svg.latex?(N,&space;d)) titkos kulcsot fogjuk használni. Adatsorral felvesszük a számtani sorozatunkat ![\inline 1, 2, ..., d](http://latex.codecogs.com/svg.latex?\inline&space;1,&space;2,&space;...,&space;d)-ig, vagyis most a példánkban![\inline 15319](http://latex.codecogs.com/svg.latex?\inline&space;15319)-ig. Ezután az első helyre bemásoljuk az első érték modulussal vett maradékát. A második elem esetén összeszorozzuk az első értéket az első helyen álló értékkel, majd képezzük a szorzat modulussal vett maradékát. És így tovább egészen a ![\inline 15319](http://latex.codecogs.com/svg.latex?\inline&space;15319). elemig. Az utolsó oszlopban lévő értékek adják ![\inline m](http://latex.codecogs.com/svg.latex?\inline&space;m)-et, amelyből egy egyszerű KARAKTER függvénnyel visszakapjuk az elkódolt szövegünket:
+
+[![rsa_3](/assets/images/rsa_3.png)](/assets/images/rsa_3.png)
